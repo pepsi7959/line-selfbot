@@ -1,5 +1,6 @@
 GOCMD=go
 GOBUILD=$(GOCMD) build
+GORUN=$(GOCMD) run
 GOTEST=$(GOCMD) test
 
 GOLINTCMD=golangci-lint
@@ -14,6 +15,9 @@ all: test build
 .PHONY: build
 build:
 	$(GOBUILD) -o $(OUTFILE) $(TARGET_PKG)
+
+dev:
+	$(GORUN) $(TARGET_PKG)/main.go
 
 .PHONY: test
 test:

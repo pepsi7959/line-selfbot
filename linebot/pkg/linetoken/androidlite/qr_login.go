@@ -2,6 +2,9 @@ package androidlite
 
 import (
 	"context"
+	"crypto/ed25519"
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"fmt"
 
@@ -23,7 +26,7 @@ func QRLogin(ctx context.Context, conf config.Config) (accessToken string, certi
 
 	qrThriftClient.SetHeader("User-Agent", conf.UserAgent)
 	qrThriftClient.SetHeader("X-Line-Application", conf.LINEApp)
-
+	qrThriftClient.SetHeader("origin", "chrome-extension://CHRLINE-v2.5.0-rc-will-not-be-released")
 	qrClient := secondaryqrcodeloginservice.NewSecondaryQrCodeLoginServiceClient(qrThriftClient.StandardClient)
 
 	session, err := qrClient.CreateSession(ctx, &secondaryqrcodeloginservice.CreateQrSessionRequest{})
@@ -40,9 +43,12 @@ func QRLogin(ctx context.Context, conf config.Config) (accessToken string, certi
 		return "", "", xerrors.Errorf("failed to create QR code: %w", err)
 	}
 
-	fmt.Println(qr.CallbackUrl)
+	pub, _, _ := ed25519.GenerateKey(rand.Reader)
+	encoding := base64.URLEncoding
+	secret := encoding.EncodeToString(pub)
+	url := fmt.Sprintf("%s?secret=%s&e2eeVersion=1", qr.CallbackUrl, secret)
 
-	encodedQR, err := qrcode.New(qr.CallbackUrl, qrcode.Medium)
+	encodedQR, err := qrcode.New(url, qrcode.Medium)
 	if err != nil {
 		return "", "", xerrors.Errorf("failed to encode QR code: %w", err)
 	}
@@ -57,6 +63,7 @@ func QRLogin(ctx context.Context, conf config.Config) (accessToken string, certi
 
 	pnThriftClient.SetHeader("User-Agent", conf.UserAgent)
 	pnThriftClient.SetHeader("X-Line-Application", conf.LINEApp)
+	qrThriftClient.SetHeader("origin", "chrome-extension://CHRLINE-v2.5.0-rc-will-not-be-released")
 
 	pnClient := secondaryqrcodeloginpermitnoticeservice.NewSecondaryQrCodeLoginPermitNoticeServiceClient(
 		pnThriftClient.StandardClient,

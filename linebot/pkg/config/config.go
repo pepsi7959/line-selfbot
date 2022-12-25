@@ -14,12 +14,12 @@ type Config struct {
 // NewConfig - Configのコンストラクタ
 func NewConfig() Config {
 	return Config{
-		Host:                      "https://legy-jp.line.naver.jp",
+		Host:                      "https://gwz.line.naver.jp",
 		TalkServicePath:           "/S4",
 		TalkServicePathForPolling: "/P4",
 		QrPath:                    "/acct/lgn/sq/v1",
 		PermitNoticePath:          "/acct/lp/lgn/sq/v1",
-		UserAgent:                 "LLA/2.13.2 Nexus 7 10.0.0",
-		LINEApp:                   "ANDROIDLITE\t2.13.2\tAndroid OS\t10;SECONDARY",
+		UserAgent:                 "Line/2.5.5",
+		LINEApp:                   "CHROMEOS\t2.5.5\tChrome OS\t1;SECONDARY",
 	}
 }
