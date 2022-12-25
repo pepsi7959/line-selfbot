@@ -1,5 +1,4 @@
-# line-selfbot
-
-## 概要
-
-LINEグループ保護bot 
+TODO: 
+ - fix line QR Login
+ 
+ reference: https://github.com/DeachSword/CHRLINE
